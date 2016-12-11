@@ -8,6 +8,8 @@ import AppBarExampleIcon from './ExampleIcon';
 import appBarExampleIconCode from '!raw!./ExampleIcon';
 import AppBarExampleIconButton from './ExampleIconButton';
 import appBarExampleIconButtonCode from '!raw!./ExampleIconButton';
+import AppBarExampleMultipleButtons from './ExampleMultipleButtons';
+import appBarExampleMultipleButtons from '!raw!./ExampleMultipleButtons';
 import AppBarExampleComposition from './ExampleComposition';
 import appBarExampleIconComposition from '!raw!./ExampleComposition';
 import appBarCode from '!raw!material-ui/AppBar/AppBar';
@@ -27,6 +29,12 @@ const AppBarPage = () => (
       title="Buttons example"
     >
       <AppBarExampleIconButton />
+    </CodeExample>
+    <CodeExample
+      code={appBarExampleMultipleButtons}
+      title="Multiple buttons example"
+    >
+      <AppBarExampleMultipleButtons />
     </CodeExample>
     <CodeExample
       code={appBarExampleIconComposition}

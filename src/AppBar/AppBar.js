@@ -91,7 +91,7 @@ class AppBar extends Component {
     /**
      * Similiar to the iconElementLeft prop except that this element is displayed on the right of the app bar.
      */
-    iconElementRight: PropTypes.element,
+    iconElementRight: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
     /**
      * Override the inline-styles of the element displayed on the left side of the app bar.
      */
@@ -265,37 +265,44 @@ class AppBar extends Component {
     }, iconStyleRight);
 
     if (iconElementRight) {
-      const iconElementRightProps = {};
+      const iconElementsRight = Array.isArray(iconElementRight) ?
+        iconElementRight : [iconElementRight];
 
-      switch (iconElementRight.type.muiName) {
-        case 'IconMenu':
-        case 'IconButton':
-          const iconElemRightChildren = iconElementRight.props.children;
-          const iconButtonIconStyle = !(
-            iconElemRightChildren &&
-            iconElemRightChildren.props &&
-            iconElemRightChildren.props.color
-          ) ? styles.iconButtonIconStyle : null;
+      const menuElementsRight = iconElementsRight.map((elem, key) => {
+        const iconElementRightProps = {
+          key,
+        };
 
-          iconElementRightProps.iconStyle = Object.assign({}, iconButtonIconStyle, iconElementRight.props.iconStyle);
-          break;
+        switch (elem.type.muiName) {
+          case 'IconMenu':
+          case 'IconButton':
+            const iconElemRightChildren = elem.props.children;
+            const iconButtonIconStyle = !(
+              iconElemRightChildren &&
+              iconElemRightChildren.props &&
+              iconElemRightChildren.props.color
+            ) ? styles.iconButtonIconStyle : null;
 
-        case 'FlatButton':
-          iconElementRightProps.style = Object.assign({}, styles.flatButton, iconElementRight.props.style);
-          break;
+            iconElementRightProps.iconStyle = Object.assign({}, iconButtonIconStyle, elem.props.iconStyle);
+            break;
 
-        default:
-      }
+          case 'FlatButton':
+            iconElementRightProps.style = Object.assign({}, styles.flatButton, elem.props.style);
+            break;
 
-      if (!iconElementRight.props.onTouchTap && this.props.onRightIconButtonTouchTap) {
-        iconElementRightProps.onTouchTap = this.handleTouchTapRightIconButton;
-      }
+          default:
+        }
+
+        if (!elem.props.onTouchTap && this.props.onRightIconButtonTouchTap) {
+          iconElementRightProps.onTouchTap = this.handleTouchTapRightIconButton;
+        }
+
+        return cloneElement(elem, iconElementRightProps);
+      });
 
       menuElementRight = (
         <div style={prepareStyles(iconRightStyle)}>
-          {Object.keys(iconElementRightProps).length > 0 ?
-            cloneElement(iconElementRight, iconElementRightProps) :
-            iconElementRight}
+          {menuElementsRight}
         </div>
       );
     } else if (iconClassNameRight) {
